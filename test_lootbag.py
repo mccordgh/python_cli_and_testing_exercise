@@ -14,11 +14,11 @@ class TestLootBag(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        print('set up class')
         # Add Global Variables/etc here
         self.bag = LootBag()
         self.bag.addToy("Doll", "Jill")
         self.bag.addToy("Pony", "Stewie")
+        self.bag.addToy("Superman", "Stewie")
         self.bag.addToy("Ball", "Stewie")
 
     @classmethod
@@ -27,7 +27,7 @@ class TestLootBag(unittest.TestCase):
 
     def test_toy_can_be_added_to_bag_and_assigned_to_child(self):
         self.assertIn("Jill", self.bag.children)
-        self.assertIn("Doll", self.bag.children['Jill'])
+        self.assertIn("Doll", self.bag.children['Jill']['toys'])
 
     def test_toy_can_be_removed_from_childs_bag(self):
         self.bag.removeToy("Pony", "Stewie")
@@ -35,7 +35,7 @@ class TestLootBag(unittest.TestCase):
 
     def test_ball_cannot_be_removed_from_childs_bag(self):
         self.bag.removeToy("Ball", "Stewie")
-        self.assertIn("Ball", self.bag.children['Stewie'])
+        self.assertIn("Ball", self.bag.children['Stewie']['toys'])
 
     def test_child_name_must_be_specified_on_remove_toy_from_bag(self):
         self.assertRaises(TypeError, self.bag.removeToy, "Doll")
@@ -45,12 +45,12 @@ class TestLootBag(unittest.TestCase):
         self.assertIsNotNone(child_list)
 
     def test_must_be_able_to_list_all_toys_for_a_single_child_given_child_name(self):
-        child_toys = self.bag.getSingleChildWithToys()
+        child_toys = self.bag.getSingleChildWithToys('Stewie')
         self.assertIsNotNone(child_toys)
 
     def test_must_be_able_to_set_delivered_property_for_child(self):
-        self.bag.setDelivered(True, "Stewie")
-        self.assertTrue(self.bag.Stewie.delivered)
+        self.bag.setDelivered("Stewie", True)
+        self.assertTrue(self.bag.children['Stewie']['delivered'])
 
 if __name__ == '__main__':
     unittest.main()
